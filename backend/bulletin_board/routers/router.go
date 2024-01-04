@@ -12,4 +12,5 @@ func init() {
 	beego.Router("/post/", &controllers.PostController{}, "post:Create")
 	beego.Router("/post/:id", &controllers.PostController{}, "get:Get;put:Update;delete:Delete")
 	beego.Router("/post/:id/like", &controllers.PostController{}, "post:Like")
+
 }

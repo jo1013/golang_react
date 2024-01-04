@@ -7,5 +7,5 @@ import (
 )
 
 func init() {
-	beego.Router("/user", &controllers.UserController{})
+	beego.Router("/auth/signup", &controllers.UserController{}, "post:Signup") // POST 메서드를 위한 라우팅 추가
 }

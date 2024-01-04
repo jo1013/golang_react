@@ -22,20 +22,20 @@ function SignupForm({ onSubmit }) {
     
         if (validate()) {
             try {
-                const response = await axios.post('http://localhost:8001/auth/signup', formData);
+                const response = await axios.post('http://user_beego:8001/auth/signup', formData);
                 if (response.data.success) {
-                    alert('회원가입이 성공적으로 완료되었습니다!'); // 사용자에게 알림
-                    history.push('/login'); // 로그인 페이지 또는 다른 페이지로 리다이렉트
+                    alert('회원가입이 성공적으로 완료되었습니다!');
+                    history.push('/login');
                 } else {
-                    // 실패 처리
                     setErrors({ api: response.data.message });
                 }
             } catch (error) {
-                // 에러 처리
-                setErrors({ api: "서버 에러" });
+                console.error("회원가입 에러:", error.response || error);
+                setErrors({ api: error.response ? error.response.data.message : "서버 에러" });
             }
         }
     };
+    
     
 
     const handleChange = (e) => {

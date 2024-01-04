@@ -10,7 +10,8 @@ services:
       - ./nginx:/etc/nginx/conf.d
     depends_on:
       - bulletin_board
-
+    networks:
+        - my_network
   bulletin_board:
     build:
       context: ./backend/bulletin_board
@@ -31,6 +32,8 @@ services:
       - ./backend/bulletin_board:/app
     ports:
       - "8000:8000"
+    networks:
+        - my_network
 
   user:
     build:
@@ -51,18 +54,11 @@ services:
     volumes:
       - ./backend/user:/app
     ports:
-      - "8001:8000"
+      - "8001:8001"
+    networks:
+        - my_network
 
-  # frontend:
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: Dockerfile
-  #   container_name: react_app
-  #   volumes:
-  #     - ./frontend:/app
-  #     - /app/node_modules
-  #   ports:
-  #     - "8081:80"
+
   frontend:
     ports:
       - "8081:80" # Nginx는 기본적으로 80 포트를 사용합니다.
@@ -73,6 +69,8 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
+    networks:
+      - my_network
 
   db:
     image: postgres:16.0-alpine
@@ -85,6 +83,8 @@ services:
       - pgdata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    networks:
+      - my_network
 
   redis:
     image: redis:latest
@@ -93,7 +93,12 @@ services:
       - redisdata:/data
     ports:
       - "6379:6379"
+    networks:
+      - my_network
 
+networks:
+  my_network:
+    driver: bridge
 volumes:
   pgdata:
   redisdata:

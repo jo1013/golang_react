@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"bulletin_board/models" // models 패키지
-	"strconv"
+	"strconv"               // 문자열 변환 패키지
 
 	"github.com/astaxie/beego"     // Beego 패키지
 	"github.com/astaxie/beego/orm" // ORM 패키지
@@ -46,6 +46,37 @@ func (c *PostController) Get() {
 	}
 
 	c.Data["json"] = post
+	c.ServeJSON()
+}
+
+func (c *PostController) Update() {
+	// URL 경로에서 게시글 ID 추출
+	idStr := c.Ctx.Input.Param(":id")
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		c.Data["json"] = map[string]string{"error": "Invalid post ID"}
+		c.ServeJSON()
+		return
+	}
+
+	// 요청 본문에서 게시글 데이터 추출
+	var post models.Post
+	if err := c.ParseForm(&post); err != nil {
+		c.Data["json"] = map[string]string{"error": "Invalid data"}
+		c.ServeJSON()
+		return
+	}
+
+	// Beego ORM을 사용하여 게시글 업데이트
+	o := orm.NewOrm()
+	post.ID = id
+	if _, err := o.Update(&post); err != nil {
+		c.Data["json"] = map[string]string{"error": "Failed to update post"}
+		c.ServeJSON()
+		return
+	}
+
+	c.Data["json"] = map[string]string{"success": "Post updated successfully"}
 	c.ServeJSON()
 }
 
